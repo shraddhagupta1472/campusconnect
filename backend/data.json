@@ -1,0 +1,27 @@
+{
+  "users": [],
+  "blogs": [
+    {
+      "id": "bc689709-b4b0-4208-b897-42d26f2a58e4",
+      "title": "Ethical Writing 101",
+      "content": "Good practices...",
+      "authorId": "38b3ec0b-e0be-44d0-b915-92dc8a99782e",
+      "createdAt": "2025-12-16T16:59:09.184Z"
+    },
+    {
+      "id": "5f6b95af-d2da-4cc1-a397-90c8de4aba85",
+      "title": "Originality Matters",
+      "content": "Why originality...",
+      "authorId": "c941c343-c3ce-4dc5-bb80-4c720db7b0b2",
+      "createdAt": "2025-12-16T16:59:09.184Z"
+    },
+    {
+      "id": "04823f04-d9ff-4cdf-a2d9-d9f45c0839d5",
+      "title": "How to Self-write",
+      "content": "Tips...",
+      "authorId": "38b3ec0b-e0be-44d0-b915-92dc8a99782e",
+      "createdAt": "2025-12-16T16:59:09.184Z"
+    }
+  ],
+  "challenges": []
+}

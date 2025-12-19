@@ -1,0 +1,225 @@
+/* ------------------------------------
+   ROOT VARIABLES (MATCHING YOUR STYLE)
+------------------------------------- */
+:root {
+  --primary: #4C6FFF;
+  --secondary: #1a2b4c;
+  --text: #1e293b;
+  --text-muted: #6a7a90;
+  --bg-light: #f5f9ff;
+  --border: rgba(255, 255, 255, 0.35);
+  --radius: 18px;
+  --shadow-soft: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* ------------------------------------
+   PAGE BASE (SAFE WITH BOOTSTRAP)
+------------------------------------- */
+body {
+  background: var(--bg-light);
+  font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
+}
+
+/* ------------------------------------
+   SIDEBAR
+------------------------------------- */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+ --bg-light: #f5f7ff;
+  padding: 22px;
+  box-shadow: var(--shadow-soft);
+}
+
+.sidebar .logo {
+  color:var(--text);
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 32px;
+}
+
+.sidebar .nav-links {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar .nav-links li {
+  margin-bottom: 12px;
+}
+
+.sidebar .nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--text);
+  transition: 0.3s ease;
+}
+
+.sidebar .nav-links a:hover,
+.sidebar .nav-links a.active {
+  background: rgba(255, 255, 255, 0.15);
+  color:var (--text);
+  transform: translateX(6px);
+}
+
+/* Notification */
+.nav-notif {
+  font-size: 20px;
+  color: var(--text);
+  position: relative;
+  margin-bottom: 24px;
+  display: inline-block;
+}
+
+.notif-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #ff4d4f;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 50%;
+}
+
+/* ------------------------------------
+   MAIN CONTENT OFFSET
+------------------------------------- */
+.container {
+  margin-left: 260px;
+}
+
+/* ------------------------------------
+   PAGE HEADER
+------------------------------------- */
+.container h2 {
+  font-weight: 800;
+  color: var(--secondary);
+}
+
+.container p {
+  color: var(--text-muted);
+}
+
+/* ------------------------------------
+   SEARCH BAR
+------------------------------------- */
+.search-bar {
+  max-width: 420px;
+  margin: auto;
+  position: relative;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 12px 42px 12px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  outline: none;
+}
+
+.search-bar i {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+/* ------------------------------------
+   LEADERBOARD CARDS (GLASS STYLE)
+------------------------------------- */
+.leaderboard-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+  transition: 0.35s ease;
+}
+
+.leaderboard-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.12);
+}
+
+/* ------------------------------------
+   INFO CARDS TEXT
+------------------------------------- */
+.leaderboard-card h6 {
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+.leaderboard-card p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* ------------------------------------
+   TABLE STYLING (BOOTSTRAP SAFE)
+------------------------------------- */
+.leaderboard-card table {
+  margin-bottom: 0;
+}
+
+.leaderboard-card thead th {
+  color: var(--text-muted);
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.leaderboard-card tbody td {
+  color: var(--text);
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.leaderboard-card tbody tr {
+  transition: 0.25s ease;
+}
+
+.leaderboard-card tbody tr:hover {
+  background: rgba(76, 111, 255, 0.08);
+}
+
+/* Top rank highlight */
+.leaderboard-card tbody tr:nth-child(1) {
+  font-weight: 700;
+  background: rgba(76, 111, 255, 0.12);
+}
+
+/* ------------------------------------
+   RULES LIST
+------------------------------------- */
+.leaderboard-card ul {
+  padding-left: 20px;
+}
+
+.leaderboard-card ul li {
+  color: var(--text);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+/* ------------------------------------
+   RESPONSIVE
+------------------------------------- */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  .container {
+    margin-left: 0;
+  }
+}

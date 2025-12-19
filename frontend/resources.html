@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resources - CampusConnect</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/resources.css">
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+  <nav class="sidebar">
+    <h2 class="logo">CampusConnect</h2>
+    <a id="notifBtn" class="nav-notif" href="notifications.html" title="Notifications" style="display:inline-flex;align-items:center;gap:8px;margin-bottom:12px"><i class="bi bi-bell" style="font-size:18px"></i><span id="notifCount" class="notif-count" style="display:none">0</span></a>
+    <ul class="nav-links">
+      <li><a href="home2.html"><i class="bi bi-house-door"></i> Home</a></li>
+      <li><a href="blog.html"><i class="bi bi-journal-text"></i> Blogs</a></li>
+      <li><a href="challenges.html"><i class="bi bi-flag"></i> Challenges</a></li>
+      <li><a href="leaderboard.html"><i class="bi bi-trophy"></i> Leaderboard</a></li>
+      <li><a class="active" href="resources.html"><i class="bi bi-book"></i> Resources</a></li>
+      <li><a href="profile.html"><i class="bi bi-person-circle"></i> Profile</a></li>
+    </ul>
+  </nav>
+
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="input-group w-50">
+        <span class="input-group-text bg-primary text-white"><i class="bi bi-search"></i></span>
+        <input id="resSearch" class="form-control" placeholder="Search resources..." />
+      </div>
+      <div>
+        <a href="#" id="addResourceBtn" class="btn btn-success"><i class="bi bi-plus-lg"></i> Add Resource</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-lg-8">
+        <div id="resourcesList" class="list-group">
+          <!-- Static sample resources (visible before JS loads or when offline) -->
+          <a class="resource-card list-group-item list-group-item-action" href="https://developer.mozilla.org/" target="_blank">
+            <div class="body">
+              <h5>HTML & CSS Basics</h5>
+              <p class="mb-1">A short guide to responsive HTML and CSS for beginners.</p>
+              <div><span class="tag-pill">html</span> <span class="tag-pill">css</span></div>
+            </div>
+            <div class="meta">By MDN <small>Today</small></div>
+          </a>
+          <a class="resource-card list-group-item list-group-item-action" href="https://javascript.info/" target="_blank">
+            <div class="body">
+              <h5>JavaScript Guide</h5>
+              <p class="mb-1">Modern JS features explained with examples.</p>
+              <div><span class="tag-pill">javascript</span></div>
+            </div>
+            <div class="meta">By JS Guide <small>Today</small></div>
+          </a>
+          <a class="resource-card list-group-item list-group-item-action" href="https://webaim.org/" target="_blank">
+            <div class="body">
+              <h5>Accessibility Checklist</h5>
+              <p class="mb-1">Make your web content accessible to everyone.</p>
+              <div><span class="tag-pill">accessibility</span></div>
+            </div>
+            <div class="meta">By WebAIM <small>Today</small></div>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="dashboard-card">
+          <h6>Filters</h6>
+          <div class="mb-3">
+            <label class="form-label small">Tags</label>
+            <div id="tagFilters" class="d-flex flex-wrap gap-2"></div>
+          </div>
+          <div>
+            <label class="form-label small">Sort</label>
+            <select id="resSort" class="form-select form-select-sm"><option value="newest">Newest</option><option value="oldest">Oldest</option></select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Resource Modal -->
+  <div class="modal fade" id="addResourceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Resource</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input id="addResTitle" class="form-control" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">URL</label>
+            <input id="addResUrl" class="form-control" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea id="addResDesc" class="form-control" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tags (comma-separated)</label>
+            <input id="addResTags" class="form-control" placeholder="e.g. html,css,accessibility" />
+          </div>
+          <div id="addResError" class="text-danger small" style="display:none"></div>
+        </div>
+        <div class="modal-footer">
+          <button id="addResCancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button id="addResSubmit" type="button" class="btn btn-primary">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/resources.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/navbar-notifications.js"></script>
+  <script src="js/theme.js"></script>
+
+</body>
+</html>

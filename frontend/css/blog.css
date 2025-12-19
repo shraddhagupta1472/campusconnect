@@ -1,0 +1,162 @@
+/* ================= VARIABLES ================= */
+:root {
+  --bg: #f8f9fa;
+  --card-bg: #fff;
+  --text: #212529;
+  --muted: #6c757d;
+  --primary: #0d6efd;
+  --hover-bg: #e9ecef;
+  --border: #dee2e6;
+}
+
+body.dark-mode {
+  --bg: #121212;
+  --card-bg: #1e1e1e;
+  --text: #e0e0e0;
+  --muted: #b0b0b0;
+  --primary: #3a82f7;
+  --hover-bg: #2a2a2a;
+  --border: #2c2c2c;
+}
+
+/* ================= BASE ================= */
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  font-family: "Poppins", sans-serif;
+  color: var(--text);
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background: var(--card-bg);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  left: 0;
+  padding: 25px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 35px;
+}
+
+.nav-links {
+  list-style: none;
+  padding: 0;
+}
+
+.nav-links li {
+  margin-bottom: 18px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px;
+  color: var(--text);
+  border-radius: 8px;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: var(--hover-bg);
+}
+
+/* ================= MAIN CONTENT ================= */
+.container {
+  margin-left: 240px;
+  padding: 40px;
+}
+
+/* ================= SEARCH BAR ================= */
+.input-group {
+  max-width: 420px;
+}
+
+.input-group-text {
+  background: var(--primary);
+  color: black;
+  border-radius: 10px 0 0 10px;
+}
+
+.form-control {
+  border-radius: 0 10px 10px 0;
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+/* ================= BLOG CARD ================= */
+.blog-item {
+  display: flex;
+  gap: 20px;
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+}
+
+.blog-thumb {
+  width: 35%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.blog-body {
+  width: 65%;
+}
+
+.blog-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.blog-meta {
+  font-size: 13px;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.blog-actions a {
+  font-weight: 600;
+}
+
+/* ================= RIGHT CARD ================= */
+.dashboard-card {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+
+  .container {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .blog-item {
+    flex-direction: column;
+  }
+
+  .blog-thumb,
+  .blog-body {
+    width: 100%;
+  }
+}

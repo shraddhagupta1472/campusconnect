@@ -1,0 +1,240 @@
+:root {
+  --bg: #ffffff;
+  --text: #0b1530;
+  --muted: #6a7a90;
+  --text-muted: #6a7a90;
+  --card-bg: rgba(255,255,255,0.75);
+  --navbar-bg: rgba(255,255,255,0.9);
+  --footer-bg: #ffffff;
+  --border: rgba(0,0,0,0.08);
+}
+
+.dark-theme {
+  --bg: #0b1220;
+  --text: #e6eef8;
+  --muted: #94a6c0;
+  --text-muted: #94a6c0;
+  --card-bg: rgba(10,15,25,0.6);
+  --navbar-bg: rgba(8,12,20,0.7);
+  --footer-bg: #071026;
+  --border: rgba(255,255,255,0.06);
+:root {
+  --bg: #ffffff;
+  --text: #0b1530;
+  --muted: #6a7a90;
+  --card-bg: rgba(255,255,255,0.75);
+  --navbar-bg: rgba(255,255,255,0.9);
+  --footer-bg: #ffffff;
+  --border: rgba(0,0,0,0.08);
+  --primary: #4C6FFF;
+  --primary-2: #2C3A8C;
+  --primary-shadow: rgba(76,111,255,0.3);
+  --hover-bg: rgba(0,0,0,0.06);
+}
+
+/* Apply general theme colors */
+html, body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+.navbar {
+  --bg: #0b1220;
+  --text: #e6eef8;
+  --muted: #94a6c0;
+  --card-bg: rgba(10,15,25,0.6);
+  --primary: #5F8BFF;
+  --primary-2: #27405f;
+  --primary-shadow: rgba(95,139,255,0.14);
+  --navbar-bg: rgba(8,12,20,0.7);
+  --hover-bg: rgba(255,255,255,0.04);
+  --footer-bg: #071026;
+  --border: rgba(255,255,255,0.06);
+  border-bottom-color: var(--border) !important;
+}
+
+.bg-light {
+  background: var(--card-bg) !important;
+
+/* Navbar links and brand */
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar .nav-btn,
+.navbar .btn {
+  color: var(--text) !important;
+}
+
+/* Navbar primary button styling (Sign Up) */
+.navbar .btn.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-2)) !important;
+  :root {
+    --bg: #ffffff;
+    --text: #0b1530;
+    --muted: #6a7a90;
+    --card-bg: rgba(255,255,255,0.75);
+    --navbar-bg: rgba(255,255,255,0.9);
+    --footer-bg: #ffffff;
+    --border: rgba(0,0,0,0.08);
+    --primary: #4C6FFF;
+    --primary-2: #2C3A8C;
+    --primary-shadow: rgba(76,111,255,0.3);
+    --hover-bg: rgba(0,0,0,0.06);
+  }
+
+  .dark-theme {
+    --bg: #0b1220;
+    --text: #e6eef8;
+    --muted: #94a6c0;
+    --card-bg: rgba(10,15,25,0.6);
+    --primary: #5F8BFF;
+    --primary-2: #27405f;
+    --primary-shadow: rgba(95,139,255,0.14);
+    --navbar-bg: rgba(8,12,20,0.7);
+    --footer-bg: #071026;
+    --border: rgba(255,255,255,0.06);
+    --hover-bg: rgba(255,255,255,0.04);
+  }
+
+  /* Apply general theme colors */
+  html, body {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+  }
+
+  .navbar {
+    background: var(--navbar-bg) !important;
+    border-bottom-color: var(--border) !important;
+  }
+
+  .bg-light {
+    background: var(--card-bg) !important;
+  }
+
+  .feature-card,
+  .category-card,
+  .testimonial-card,
+  .card,
+  .sidebar-card,
+  .dashboard-card,
+  .info-card {
+    background: var(--card-bg) !important;
+    border-color: var(--border) !important;
+    color: var(--text) !important;
+  }
+
+  /* Common page card-like elements */
+  .login-card,
+  .forgot-card,
+  .signup-card,
+  .recent-card,
+  .blog-card {
+    background: var(--card-bg) !important;
+    border-color: var(--border) !important;
+    color: var(--text) !important;
+  }
+
+  /* Navbar links and brand */
+  .navbar .navbar-brand,
+  .navbar .nav-link,
+  .navbar .nav-btn,
+  .navbar .btn {
+    color: var(--text) !important;
+  }
+
+  /* Navbar primary button styling (Sign Up) */
+  .navbar .btn.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-2)) !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 8px 18px var(--primary-shadow) !important;
+  }
+
+  .navbar .btn.btn-outline-secondary {
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+  }
+
+  /* Primary button and hero gradient that adapts to theme colors */
+  .btn-primary-custom {
+    background: linear-gradient(135deg, var(--primary), var(--primary-2)) !important;
+    box-shadow: 0 8px 20px var(--primary-shadow) !important;
+  }
+
+  .hero-title {
+    background: linear-gradient(90deg, var(--primary), var(--primary-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .testimonial-card img {
+    border: 3px solid var(--primary);
+    padding: 3px;
+    box-shadow: 0 8px 22px var(--primary-shadow);
+    transition: 0.35s ease;
+  }
+
+  footer {
+    background: var(--footer-bg) !important;
+    border-top-color: var(--border) !important;
+  }
+
+  a, a:hover {
+    color: inherit;
+  }
+
+  /* Theme toggle small helper */
+  #themeToggle {
+    min-width: 44px;
+  }
+
+/* Scroll to top button */
+.scroll-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: #fff;
+  border: none;
+  box-shadow: 0 8px 18px var(--primary-shadow);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 160ms ease, transform 160ms ease;
+  z-index: 9999;
+}
+.scroll-to-top.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.scroll-to-top:focus { outline: 3px solid rgba(76,111,255,0.22); }
+.scroll-to-top:hover { filter: brightness(0.98); }
+
+/* Bookmark pin styles */
+.pinned-badge { background: linear-gradient(135deg,#FFD54F,#FFC107); color: #111; padding: 2px 6px; border-radius: 6px; font-weight:600; font-size: 12px; }
+.bookmark-pin { color: var(--primary); margin-left:6px; }
+
+/* Notification badge */
+.nav-notif { color: var(--text); text-decoration: none; }
+.nav-notif .notif-count { background: linear-gradient(90deg,#ff4d4f,#ff7043); color: #fff; padding: 2px 6px; border-radius: 12px; font-size: 12px; display: inline-block; min-width: 20px; text-align: center; }
+
+/* Banner shown when bookmarks are disabled */
+.bookmarks-disabled-banner {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, rgba(255,160,64,0.95), rgba(255,130,80,0.95));
+  color: #111;
+  padding: 10px 14px;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  z-index: 99999;
+}
+.bookmarks-disabled-banner .inner { display:flex; gap:8px; align-items:center; }
+.bookmarks-disabled-banner .dismiss { color: #111; text-decoration: underline; }

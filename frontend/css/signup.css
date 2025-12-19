@@ -1,0 +1,165 @@
+/* ================================
+   ROOT VARIABLES
+================================ */
+:root {
+    --primary: #4c6fff;
+    --primary-2: #6a8bff;
+    --bg: linear-gradient(135deg, #eef2ff, #f8faff);
+    --card-bg: rgba(255, 255, 255, 0.75);
+    --text-dark: #1f2937;
+    --border: rgba(255, 255, 255, 0.3);
+    --shadow: 0 25px 45px rgba(0, 0, 0, 0.08);
+    --radius: 18px;
+}
+
+/* ================================
+   BODY
+================================ */
+body {
+    background: var(--bg);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-dark);
+}
+
+/* ================================
+   CONTAINER
+================================ */
+.signup-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 15px;
+}
+
+/* ================================
+   CARD (Glassmorphism)
+================================ */
+.signup-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: var(--radius);
+    padding: 35px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    animation: fadeInUp 0.6s ease;
+}
+
+/* ================================
+   INPUTS
+================================ */
+.form-control {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(76, 111, 255, 0.15);
+    transform: scale(1.01);
+}
+
+/* ================================
+   BUTTON
+================================ */
+.signup-btn {
+    padding: 12px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    border: none;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.35s ease;
+}
+
+.signup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(76, 111, 255, 0.35);
+}
+
+.signup-btn:active {
+    transform: scale(0.97);
+}
+
+/* Button ripple */
+.signup-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10%);
+    transform: scale(0);
+    transition: transform 0.5s;
+}
+
+.signup-btn:active::after {
+    transform: scale(4);
+}
+
+/* ================================
+   LINKS
+================================ */
+a {
+    color: var(--primary);
+    font-weight: 500;
+    position: relative;
+}
+
+a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: width 0.3s ease;
+}
+
+a:hover::after {
+    width: 100%;
+}
+
+/* ================================
+   TEXT
+================================ */
+.signup-card h3 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.signup-card p {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+/* ================================
+   ANIMATIONS
+================================ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 480px) {
+    .signup-card {
+        padding: 25px;
+    }
+}

@@ -1,0 +1,165 @@
+/* ================================
+   ROOT VARIABLES
+================================ */
+:root {
+    --primary: #4c6fff;
+    --primary-2: #6a8bff;
+    --bg: linear-gradient(135deg, #eef2ff, #f8faff);
+    --card-bg: rgba(255, 255, 255, 0.78);
+    --text-dark: #1f2937;
+    --border: rgba(255, 255, 255, 0.35);
+    --shadow: 0 25px 45px rgba(0, 0, 0, 0.08);
+    --radius: 18px;
+}
+
+/* ================================
+   BACKGROUND
+================================ */
+body {
+    background: var(--bg);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-dark);
+}
+
+/* ================================
+   CENTER CONTAINER
+================================ */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+}
+
+/* ================================
+   LOGIN CARD (Glass Effect)
+================================ */
+.login-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    padding: 35px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    animation: slideFade 0.6s ease;
+}
+
+/* ================================
+   INPUT FIELDS
+================================ */
+.form-control {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(76, 111, 255, 0.15);
+    transform: scale(1.01);
+}
+
+/* ================================
+   LOGIN BUTTON
+================================ */
+.login-btn {
+    padding: 12px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    border: none;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.35s ease;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(76, 111, 255, 0.35);
+}
+
+.login-btn:active {
+    transform: scale(0.97);
+}
+
+/* Ripple Effect */
+.login-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10%);
+    transform: scale(0);
+    transition: transform 0.5s;
+}
+
+.login-btn:active::after {
+    transform: scale(4);
+}
+
+/* ================================
+   LINKS
+================================ */
+a {
+    color: var(--primary);
+    font-weight: 500;
+    position: relative;
+}
+
+a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: width 0.3s ease;
+}
+
+a:hover::after {
+    width: 100%;
+}
+
+/* ================================
+   TEXT
+================================ */
+.login-card h4 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.login-card p {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+/* ================================
+   ANIMATIONS
+================================ */
+@keyframes slideFade {
+    from {
+        opacity: 0;
+        transform: translateY(-25px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 25px;
+    }
+}

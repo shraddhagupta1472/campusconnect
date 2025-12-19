@@ -1,0 +1,170 @@
+/* GENERAL */
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    font-family: "Poppins", sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: var(--card-bg);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    left: 0;
+    padding: 25px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 35px;
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+}
+
+.nav-links li {
+    margin-bottom: 18px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 12px;
+    color: var(--text);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links .active {
+    background: var(--hover-bg);
+    color: var(--primary);
+}
+
+/* MAIN CONTENT */
+.main-content {
+    margin-left: 240px;
+    padding: 40px 20px;
+}
+
+/* SECTION HEADINGS */
+h3 {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 25px;
+}
+
+/* CARDS */
+.dashboard-card {
+    background: var(--card-bg);
+    padding: 20px 15px;
+    border-radius: 15px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s, box-shadow 0.3s;
+    width: 100%;
+    position: relative;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+/* CARD ICONS */
+.card-icon {
+    font-size: 40px;
+    color: var(--primary);
+    margin-bottom: 15px;
+}
+
+/* CARD CONTENT */
+.dashboard-card h5 {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text);
+}
+
+.dashboard-card p {
+    font-size: 14px;
+    color: var(--muted);
+    flex-grow: 1;
+}
+
+/* BUTTONS */
+.dashboard-card .btn {
+    margin-top: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    padding: 5px 12px;
+}
+
+/* RESPONSIVE CARDS EQUAL HEIGHT */
+.row.d-flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.row.d-flex > .col-md-4,
+.row.d-flex > .col-md-3 {
+    display: flex;
+}
+
+.row.d-flex > .col-md-4 .dashboard-card,
+.row.d-flex > .col-md-3 .dashboard-card {
+    flex: 1 1 auto;
+}
+
+/* CHALLENGES & GAMES */
+.challenges-section .dashboard-card .card-icon {
+    color: #4154f1;
+}
+
+.games-section .dashboard-card .card-icon {
+    color: #28a745;
+}
+
+/* Bookmark button */
+.bookmark-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+.bookmark-btn.bookmarked { background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #fff; border: none; }
+.bookmark-btn:focus { outline: 2px solid rgba(76,111,255,0.18); }
+.bookmark-btn .bi { font-size: 16px; }
+
+/* MEDIA QUERIES */
+@media (max-width: 992px) {
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        padding: 15px;
+    }
+}

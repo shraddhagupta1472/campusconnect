@@ -1,0 +1,23 @@
+/* ----------- MAIN FLEX LAYOUT ----------- */
+.blog-layout {
+  display: flex;
+  gap: 25px;
+  align-items: flex-start;
+}
+
+/* Left (Form) takes more width */
+.blog-form-section {
+  flex: 2;
+}
+
+/* Right sidebar */
+.blog-sidebar-section {
+  flex: 1;
+}
+
+/* ----------- RESPONSIVE FIX ----------- */
+@media (max-width: 992px) {
+  .blog-layout {
+    flex-direction: column;   /* stack vertically */
+  }
+}

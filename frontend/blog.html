@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blogs - CampusConnect</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/blog.css">
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <h2 class="logo">CampusConnect</h2>
+    <a id="notifBtn" class="nav-notif" href="notifications.html" title="Notifications"
+       style="display:inline-flex; align-items:center; gap:8px; margin-bottom:12px">
+      <i class="bi bi-bell" style="font-size:18px"></i>
+      <span id="notifCount" class="notif-count" style="display:none">0</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="home2.html"><i class="bi bi-house-door"></i> Home</a></li>
+      <li><a class="active" href="blog.html"><i class="bi bi-journal-text"></i> Blogs</a></li>
+      <li><a href="challenges.html"><i class="bi bi-flag"></i> Challenges</a></li>
+      <li><a href="leaderboard.html"><i class="bi bi-trophy"></i> Leaderboard</a></li>
+      <li><a href="resources.html"><i class="bi bi-book"></i> Resources</a></li>
+      <li><a href="profile.html"><i class="bi bi-person-circle"></i> Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- TOP BAR: Search + Write Blog -->
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <!-- Search Bar -->
+      <div class="input-group w-50">
+        <span class="input-group-text bg-primary text-white">
+          <i class="bi bi-search"></i>
+        </span>
+        <input type="text" class="form-control" id="searchInput" placeholder="Search blogs...">
+      </div>
+
+      <!-- Write a Blog Button -->
+      <div class="d-flex align-items-center">
+        <a href="write-blog.html" class="btn btn-success">
+          <i class="bi bi-pencil-square"></i> Write a Blog
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOG LAYOUT: Main List + Sidebar -->
+  <div class="container mt-4">
+    <div class="row">
+      <!-- Blog List -->
+      <div class="col-lg-8">
+        <div id="blogDetail" style="display:none" class="mb-4"></div>
+        <div id="essentialList" class="mb-3"></div>
+        <div id="blogContainer" class="list-group blog-list">
+          <!-- Demo Posts -->
+          <div class="list-group-item blog-item" data-sample="1">
+            <img src="images/blog2.avif" class="blog-thumb" alt="">
+            <div class="blog-body">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="blog-title">Welcome to CampusConnect</div>
+                <div><span class="essential-badge">Essential</span></div>
+              </div>
+              <div class="blog-meta">By Campus Team · just now</div>
+              <p>This is a demo post to help you preview the layout. Start the backend to load real posts.</p>
+              <div class="blog-actions">
+                <a class="btn btn-primary btn-sm" href="blog.html#demo1">Read</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="list-group-item blog-item" data-sample="2">
+            <img src="images/blog4.avif" class="blog-thumb" alt="">
+            <div class="blog-body">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="blog-title">Getting Started with Internships</div>
+              </div>
+              <div class="blog-meta">By Admin · just now</div>
+              <p>Tips on finding internships and building a portfolio to land your first role.</p>
+              <div class="blog-actions">
+                <a class="btn btn-primary btn-sm" href="blog.html#demo2">Read</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="list-group-item blog-item" data-sample="3">
+            <img src="images/blog4.avif" class="blog-thumb" alt="">
+            <div class="blog-body">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="blog-title">Interview Preparation Checklist</div>
+              </div>
+              <div class="blog-meta">By Guide · just now</div>
+              <p>Step-by-step checklist to prepare for technical interviews and coding rounds.</p>
+              <div class="blog-actions">
+                <a class="btn btn-primary btn-sm" href="blog.html#demo3">Read</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar: Explore -->
+      <div class="col-lg-4">
+        <div class="dashboard-card">
+          <h6>Explore</h6>
+          <p class="small text-muted">Filter by tags, authors, or sort by newest.</p>
+
+          <!-- Tags -->
+          <div class="mb-3">
+            <label class="form-label small">Tags</label>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-outline-secondary btn-sm">AI</button>
+              <button class="btn btn-outline-secondary btn-sm">Internships</button>
+              <button class="btn btn-outline-secondary btn-sm">Events</button>
+            </div>
+          </div>
+
+          <!-- Sort -->
+          <div>
+            <label class="form-label small">Sort</label>
+            <select id="sortSelect" class="form-select form-select-sm">
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+            </select>
+          </div>
+
+          <!-- Essential Only Toggle -->
+          <div class="form-check form-switch mt-2">
+            <input class="form-check-input" type="checkbox" id="essentialOnly">
+            <label class="form-check-label small" for="essentialOnly">Show essential only</label>
+          </div>
+
+          <hr>
+
+          <!-- Pagination Controls -->
+          <div id="paginationControls" class="d-flex justify-content-between align-items-center mt-3">
+            <small id="paginationInfo" class="text-muted">Showing 0</small>
+            <div class="d-flex align-items-center">
+              <button id="showAllBtn" class="btn btn-sm btn-outline-primary me-2">Show all</button>
+              <button id="prevPage" class="btn btn-sm btn-outline-secondary me-1" disabled>Prev</button>
+              <button id="nextPage" class="btn btn-sm btn-outline-secondary" disabled>Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Socket.io client (served by backend) -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- JS Scripts -->
+  <script src="js/blog.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/bookmarks.js"></script>
+  <script src="js/navbar-notifications.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/scroll-top.js"></script>
+
+  <!-- Edit Blog Modal -->
+  <div class="modal fade" id="editBlogModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Blog</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input id="editTitle" class="form-control" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Content</label>
+            <textarea id="editContent" rows="8" class="form-control"></textarea>
+          </div>
+          <div class="mb-3 form-check">
+            <input type="checkbox" id="editEssential" class="form-check-input" />
+            <label class="form-check-label" for="editEssential">Essential</label>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mood/Tag</label>
+            <input id="editMood" class="form-control" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button id="saveEditBtn" type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Filter Script -->
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    function filterBlogs() {
+      const value = searchInput.value.toLowerCase();
+      const items = document.querySelectorAll('.blog-item');
+      items.forEach(item => {
+        const title = (item.querySelector('.blog-title') || {}).innerText || '';
+        const text = (item.querySelector('p') || {}).innerText || '';
+        if (title.toLowerCase().includes(value) || text.toLowerCase().includes(value)) item.style.display = '';
+        else item.style.display = 'none';
+      });
+    }
+    searchInput.addEventListener('keyup', filterBlogs);
+    searchInput.addEventListener('change', filterBlogs);
+  </script>
+
+</body>
+</html>

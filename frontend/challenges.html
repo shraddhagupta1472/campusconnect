@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Challenges - CampusConnect</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/challenges.css">
+    <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+      <h2 class="logo">CampusConnect</h2>
+        <a id="notifBtn" class="nav-notif" href="notifications.html" title="Notifications" style="display:inline-flex;align-items:center;gap:8px;margin-bottom:12px"><i class="bi bi-bell" style="font-size:18px"></i><span id="notifCount" class="notif-count" style="display:none">0</span></a>
+      <ul class="nav-links">
+          <li><a href="home2.html"><i class="bi bi-house-door"></i> Home</a></li>
+          <li><a href="blog.html"><i class="bi bi-journal-text"></i> Blogs</a></li>
+          <li><a class="active" href="challenges.html"><i class="bi bi-flag"></i> Challenges</a></li>
+          <li><a href="leaderboard.html"><i class="bi bi-trophy"></i> Leaderboard</a></li>
+          <li><a href="resources.html"><i class="bi bi-book"></i> Resources</a></li>
+          <li><a href="profile.html"><i class="bi bi-person-circle"></i> Profile</a></li>
+      </ul>
+  </nav>
+    <script src="js/navbar-notifications.js"></script>
+  <!-- MAIN CONTENT -->
+  <div class="main-content container mt-4">
+
+      <!-- Challenges Section (populated from API, falls back to defaults) -->
+      <section class="challenges-section mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="mb-0">Campus Challenges</h3>
+                            <div class="d-flex align-items-center">
+                                <div class="me-3 d-flex gap-2 align-items-center">
+                                    <input id="challengeSearch" class="form-control form-control-sm" placeholder="Search challenges..." style="min-width:220px" />
+                                    <select id="challengeSort" class="form-select form-select-sm">
+                                        <option value="new">Newest</option>
+                                        <option value="popular">Most participants</option>
+                                        <option value="alpha">A → Z</option>
+                                    </select>
+                                </div>
+                                <button onclick="showCreateModal()" class="btn btn-outline-primary btn-sm">Create Challenge</button>
+                            </div>
+                    </div>
+
+          <div id="challengeContainer" class="row g-4">
+            <!-- Challenge cards will be injected here by js/challenges.js -->
+          </div>
+      </section>
+
+      <!-- Games Section -->
+      <section class="games-section">
+          <h3 class="mb-4">Fun Campus Games</h3>
+          <div class="row g-4">
+              <div class="col-md-3 d-flex">
+                  <div class="dashboard-card w-100 text-center p-4">
+                      <i class="bi bi-dice-5 card-icon mb-3"></i>
+                      <h5>Code Quiz</h5>
+                      <p>Test your coding knowledge with quick multiple-choice questions.</p>
+                      <button class="btn btn-success btn-sm mt-2">Play</button>
+                  </div>
+              </div>
+
+              <div class="col-md-3 d-flex">
+                  <div class="dashboard-card w-100 text-center p-4">
+                      <i class="bi bi-puzzle card-icon mb-3"></i>
+                      <h5>Puzzle Game</h5>
+                      <p>Solve interactive puzzles designed for fun and learning.</p>
+                      <button class="btn btn-success btn-sm mt-2">Play</button>
+                  </div>
+              </div>
+
+              <div class="col-md-3 d-flex">
+                  <div class="dashboard-card w-100 text-center p-4">
+                      <i class="bi bi-joystick card-icon mb-3"></i>
+                      <h5>Memory Challenge</h5>
+                      <p>Train your brain with memory-based mini-games for students.</p>
+                      <button class="btn btn-success btn-sm mt-2">Play</button>
+                  </div>
+              </div>
+
+              <div class="col-md-3 d-flex">
+                  <div class="dashboard-card w-100 text-center p-4">
+                      <i class="bi bi-controller card-icon mb-3"></i>
+                      <h5>Campus Trivia</h5>
+                      <p>Answer questions about JIT Borawan and test your campus knowledge.</p>
+                      <button class="btn btn-success btn-sm mt-2">Play</button>
+                  </div>
+              </div>
+
+              <div class="col-md-3 d-flex">
+                  <div class="dashboard-card w-100 text-center p-4">
+                      <i class="bi bi-lightbulb card-icon mb-3"></i>
+                      <h5>Guess the Output</h5>
+                      <p>Predict the output of short code snippets and score points.</p>
+                      <button class="btn btn-success btn-sm mt-2">Play</button>
+                  </div>
+              </div>
+
+              <div class="col-md-3 d-flex">
+                  <div class="dashboard-card w-100 text-center p-4">
+                      <i class="bi bi-bug card-icon mb-3"></i>
+                      <h5>Debugging Challenge</h5>
+                      <p>Find bugs in small programs and submit fixes for review.</p>
+                      <button class="btn btn-success btn-sm mt-2">Play</button>
+                  </div>
+              </div>
+          </div>
+      </section>
+
+  </div>
+<!-- Socket.io client (served by backend) -->
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/challenges.js"></script>
+<script src="js/bookmarks.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/scroll-top.js"></script>
+    <!-- Create Challenge Modal -->
+    <div class="modal fade" id="createChallengeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Challenge</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createChallengeForm">
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <input id="createTitle" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea id="createDescription" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <div id="createError" class="text-danger" style="display:none"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="createSubmit" type="button" class="btn btn-primary">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

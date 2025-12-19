@@ -1,0 +1,20 @@
+/* Settings page styles — separate file (no inline CSS) */
+:root {
+  --card-radius: 12px;
+}
+
+.settings-card { border-radius: var(--card-radius); margin-bottom: 18px; }
+.avatar-preview img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 2px solid #e5e7eb; }
+.avatar-preview-lg img { width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid #e5e7eb; }
+
+/* small tweaks to make the page responsive and clean */
+@media (max-width: 992px) {
+  .avatar-preview, .avatar-preview-lg { margin: 0 auto; }
+}
+
+.card.settings-card { box-shadow: 0 6px 20px rgba(15,23,42,0.04); }
+
+/* saved status micro-animation */
+#s_status, #s_profileSaved { transition: opacity 0.25s ease; }
+#s_status.show, #s_profileSaved.show { opacity: 1; }
+#s_status.hide, #s_profileSaved.hide { opacity: 0; }

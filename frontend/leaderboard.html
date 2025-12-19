@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ethical Writing Leaderboard</title>
+
+  <!-- Bootstrap CSS (REQUIRED) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Your CSS (must be AFTER bootstrap) -->
+  <link rel="stylesheet" href="css/leaderboard.css">
+</head>
+
+<body>
+
+  <!-- ================= SIDEBAR ================= -->
+  <nav class="sidebar">
+    <h2 class="logo">CampusConnect</h2>
+    <a id="notifBtn" class="nav-notif" href="notifications.html" title="Notifications">
+      <i class="bi bi-bell"></i>
+      <span id="notifCount" class="notif-count" style="display:none">0</span>
+    </a>
+    <ul class="nav-links">
+      <li><a class="active" href="home2.html"><i class="bi bi-house-door"></i> Home</a></li>
+      <li><a href="blog.html"><i class="bi bi-journal-text"></i> Blogs</a></li>
+      <li><a href="challenges.html"><i class="bi bi-flag"></i> Challenges</a></li>
+      <li><a href="leaderboard.html"><i class="bi bi-trophy"></i> Leaderboard</a></li>
+      <li><a href="resources.html"><i class="bi bi-book"></i> Resources</a></li>
+      <li><a href="profile.html"><i class="bi bi-person-circle"></i> Profile</a></li>
+    </ul>
+  </nav>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <div class="container my-5">
+
+    <!-- Page Header -->
+    <div class="text-center mb-4">
+      <h2 class="fw-bold">Ethical Writing Leaderboard</h2>
+      <p class="text-muted">See how writers rank based on originality, consistency, and ethical standards</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar mb-4">
+      <input type="text" id="searchInput" placeholder="Search user...">
+      <i class="bi bi-search"></i>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="leaderboard-card p-3 text-center">
+          <h6 class="fw-semibold">What is this?</h6>
+          <p class="mb-0 text-muted">A ranking system that rewards self-written and original blogs.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="leaderboard-card p-3 text-center">
+          <h6 class="fw-semibold">How scoring works</h6>
+          <p class="mb-0 text-muted">Based on originality, human-written score, and number of blogs.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="leaderboard-card p-3 text-center">
+          <h6 class="fw-semibold">Why it matters</h6>
+          <p class="mb-0 text-muted">Encourages ethical, honest, and quality writing.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaderboard Table -->
+    <div class="leaderboard-card p-4 mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong>Leaderboard</strong>
+        <div id="lastUpdated" class="text-muted small">Last updated: —</div>
+      </div>
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>User</th>
+            <th>Blogs Written</th>
+            <th>Originality</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard">
+          <!-- JS will dynamically insert rows here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Ethical Writing Rules -->
+    <div class="leaderboard-card p-4 mb-5">
+      <h4 class="fw-bold mb-3">Ethical Writing Rules</h4>
+      <ul class="mb-0">
+        <li>Content must be written by the user without copying.</li>
+        <li>AI-generated content reduces the ethical score.</li>
+        <li>High originality and consistency improve ranking.</li>
+        <li>Plagiarized blogs may be rejected by admin review.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ================= JS ================= -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/leaderboard.js"></script>
+</body>
+</html>

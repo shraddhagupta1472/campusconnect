@@ -1,0 +1,111 @@
+/* ================= BASE ================= */
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  font-family: "Poppins", sans-serif;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background: var(--card-bg);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  left: 0;
+  padding: 25px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 35px;
+}
+
+.nav-links {
+  list-style: none;
+  padding: 0;
+}
+
+.nav-links li {
+  margin-bottom: 18px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px;
+  color: var(--text);
+  border-radius: 8px;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: var(--hover-bg);
+}
+
+/* ================= MAIN CONTENT ================= */
+.container {
+  margin-left: 240px;
+  padding: 40px;
+}
+
+/* ================= SEARCH ================= */
+.input-group {
+  max-width: 420px;
+}
+
+#addResourceBtn {
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* ================= RESOURCE CARD ================= */
+#resourcesList .list-group-item {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 18px;
+  border: none;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+}
+
+#resourcesList h6 {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+#resourcesList p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+#resourcesList a {
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--primary);
+}
+
+/* ================= FILTER CARD ================= */
+.dashboard-card {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+  }
+
+  .container {
+    margin-left: 0;
+    padding: 20px;
+  }
+}
