@@ -72,7 +72,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   } catch (e) { /* ignore */ }
+
+  // Attach save button handler (ensure element exists after DOM parsed)
+  const saveBtn = document.getElementById('saveEditBtn');
+  if (saveBtn) saveBtn.addEventListener('click', () => saveEditBlog());
 });
+
+// attach save button (fallback for older browsers or when script loaded after modal)
+// kept for backward compatibility
+// const saveBtn = document.getElementById('saveEditBtn');
+// if (saveBtn) saveBtn.addEventListener('click', () => saveEditBlog());
 
 // Show single blog detail
 async function showBlogDetail(id) {
