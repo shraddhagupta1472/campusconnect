@@ -1,4 +1,4 @@
-const API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api';
+if (typeof API_BASE === 'undefined') { var API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api'; }
 
 async function fetchBookmarks() {
   const token = localStorage.getItem('cc_token');
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const token = localStorage.getItem('cc_token');
       if (token) {
-        const res = await fetch((window.API_BASE || 'http://localhost:4000') + '/api/profile', { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${API_BASE}/profile`, { headers: { Authorization: `Bearer ${token}` } });
         if (res.ok) {
           const p = await res.json();
           bookmarksEnabled = typeof p.user.bookmarksEnabled === 'boolean' ? p.user.bookmarksEnabled : true;

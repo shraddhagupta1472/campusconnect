@@ -1,4 +1,4 @@
-const API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api';
+if (typeof API_BASE === 'undefined') { var API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api'; }
 
 const DEMO_NOTIFICATIONS = [
   { id: 'n1', message: 'Welcome to CampusConnect! Create your first post to earn a badge.', url: '#', createdAt: new Date().toISOString() },

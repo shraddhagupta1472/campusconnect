@@ -33,7 +33,7 @@
   </div>
 
   <script>
-    const API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api';
+    if (typeof API_BASE === 'undefined') { var API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api'; }
   </script>
   <script src="js/notifications.js"></script>
   <script src="js/theme.js"></script>

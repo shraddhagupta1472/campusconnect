@@ -32,7 +32,7 @@ docker-compose up -d mongo
 cd backend
 npm install
 # migrate existing file DB to Mongo (optional)
-npm run migrate
+If you have an existing `backend/data.json` (from a prior version), you can restore it and run `npm run migrate` to import it. By default this project does not include sample `data.json` and runs MongoDB-only.
 npm start
 ```
 
@@ -92,16 +92,9 @@ const res = await fetch(`${API_BASE}/endpoint`, {
 });
 ```
 
-## Testing & smoke checks
+## Testing checks
 
-- Run a lightweight smoke test (requires `MONGODB_URI` and the server running):
-
-```powershell
-# from backend/
-npm run smoke
-```
-
-- In CI prefer `mongodb-memory-server` or a test Mongo instance and run the same smoke script after bootstrapping the server.
+- For CI prefer `mongodb-memory-server` or a test Mongo instance and run lightweight integration checks after bootstrapping the server.
 
 ## Critical Gotchas
 

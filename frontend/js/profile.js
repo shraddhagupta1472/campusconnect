@@ -1,6 +1,20 @@
-const API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api';
+if (typeof API_BASE === 'undefined') {
+  var API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api';
+}
 
-function escapeHtml(s) { return (s||'').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":"&#39;",'"':'&quot;'}[c])); }
+console.log('profile.js loaded');
+// global error reporting to help diagnose broken scripts
+window.addEventListener('error', (ev) => {
+  console.error('Window error:', ev.message, ev.filename + ':' + ev.lineno + ':' + ev.colno);
+  try {
+    let b = document.getElementById('cc_error_banner');
+    if (!b) { b = document.createElement('div'); b.id = 'cc_error_banner'; b.style.cssText = 'position:fixed;left:0;right:0;top:0;padding:8px 12px;background:#ffdddd;color:#800;border-bottom:1px solid #f5a9a9;z-index:99999;font-size:13px'; document.body.appendChild(b); }
+    b.textContent = `Error: ${ev.message} (${ev.filename}:${ev.lineno})`;
+  } catch (e) {}
+});
+window.addEventListener('unhandledrejection', (ev) => { console.error('Unhandled rejection:', ev.reason); });
+
+function escapeHtml(s) { return (s||'').replace(/[&<>'\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":"&#39;",'"':'&quot;'}[c])); }
 
 // Helper to set and synchronize profile image across profile/settings UI and persist preview
 function setProfileImageUrl(url) {
@@ -74,7 +88,7 @@ async function getProfile() {
           try {
             const token = localStorage.getItem('cc_token');
             if (token) {
-              const resMe = await fetch((window.API_BASE || 'http://localhost:4000') + '/api/profile', { headers: { Authorization: `Bearer ${token}` } });
+              const resMe = await fetch(`${API_BASE}/profile`, { headers: { Authorization: `Bearer ${token}` } });
               if (resMe.ok) {
                 const me = await resMe.json();
                 if (me && me.user && Array.isArray(me.user.following)) isFollowing = me.user.following.includes(viewId);
@@ -96,7 +110,7 @@ async function getProfile() {
                 try {
                   const token = localStorage.getItem('cc_token');
                   if (!token) return window.CCShowToast('Please sign in to follow users', 'danger');
-                  const url = (window.API_BASE || 'http://localhost:4000') + `/api/users/${encodeURIComponent(viewId)}/${isFollowing ? 'unfollow' : 'follow'}`;
+                  const url = `${API_BASE}/users/${encodeURIComponent(viewId)}/${isFollowing ? 'unfollow' : 'follow'}`;
                   const res = await fetch(url, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
                   if (!res.ok) throw new Error('Failed');
                   const d = await res.json();
@@ -377,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!listEl) return;
     listEl.innerHTML = '<div class="small text-muted">Loading...</div>';
     try {
-      const res = await fetch((window.API_BASE || 'http://localhost:4000') + '/api/leaderboard');
+      const res = await fetch(`${API_BASE}/leaderboard`);
       if (!res.ok) throw new Error('Failed to load');
       const data = await res.json();
       renderProfileLeaderboard(data.slice(0,3));
@@ -402,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('cc_token');
     try {
       if (token) {
-        const res = await fetch((window.API_BASE || 'http://localhost:4000') + '/api/bookmarks', { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${API_BASE}/bookmarks`, { headers: { Authorization: `Bearer ${token}` } });
         if (!res.ok) throw new Error('Failed');
         const data = await res.json();
         const items = data.bookmarks || [];
@@ -444,7 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!el) return;
     el.innerHTML = '<div class="small text-muted">Loading...</div>';
     try {
-      const res = await fetch((window.API_BASE || 'http://localhost:4000') + `/api/users/${encodeURIComponent(userId)}/followers`);
+      const res = await fetch(`${API_BASE}/users/${encodeURIComponent(userId)}/followers`);
       if (!res.ok) throw new Error('Failed to load');
       const data = await res.json();
       if (!data.followers || !data.followers.length) { el.innerHTML = '<div class="small text-muted">No followers yet.</div>'; return; }
@@ -465,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!el) return;
     el.innerHTML = '<div class="small text-muted">Loading...</div>';
     try {
-      const res = await fetch((window.API_BASE || 'http://localhost:4000') + `/api/users/${encodeURIComponent(userId)}/following`);
+      const res = await fetch(`${API_BASE}/users/${encodeURIComponent(userId)}/following`);
       if (!res.ok) throw new Error('Failed to load');
       const data = await res.json();
       if (!data.following || !data.following.length) { el.innerHTML = '<div class="small text-muted">Not following anyone yet.</div>'; return; }
@@ -559,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
           // save locally if not signed in
           try { const u = JSON.parse(localStorage.getItem('cc_user')||'null') || {}; u.name = newName; localStorage.setItem('cc_user', JSON.stringify(u)); profileNameEl.textContent = newName; nameEditor.style.display = 'none'; return; } catch (e) { console.error(e); }
         }
-        const res = await fetch((window.API_BASE || 'http://localhost:4000') + '/api/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ name: newName }) });
+        const res = await fetch(`${API_BASE}/profile`, { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ name: newName }) });
         if (!res.ok) throw new Error('Failed to save');
         const data = await res.json();
         if (data && data.user) {
@@ -607,7 +621,7 @@ document.addEventListener('DOMContentLoaded', () => {
               try {
                 const form = new FormData();
                 form.append('avatar', f);
-                const res = await fetch((window.API_BASE||'http://localhost:4000') + '/api/profile', {
+                const res = await fetch(`${API_BASE}/profile`, {
                   method: 'PUT', headers: { Authorization: `Bearer ${token}` }, body: form
                 });
                 const d = await res.json().catch(() => ({}));
@@ -696,23 +710,48 @@ document.addEventListener('DOMContentLoaded', () => {
   } catch (e) { /* ignore */ }
   const logout = document.getElementById('logoutBtn');
   if (logout) {
-    logout.addEventListener('click', (e) => {
+    console.log('Attaching logout dropdown handler');
+    try { logout.addEventListener('click', (e) => {
       e.preventDefault();
+      console.log('Logout clicked (dropdown)');
       localStorage.removeItem('cc_token');
       localStorage.removeItem('cc_user');
       window.location.href = 'login.html';
-    });
+    }); } catch(e) { console.error('Could not attach logout handler (dropdown)', e); }
   }
   // also wire the visible logout button in the header
   const logoutVisible = document.getElementById('logoutBtnVisible');
   if (logoutVisible) {
-    logoutVisible.addEventListener('click', (e) => {
+    console.log('Attaching visible logout handler');
+    try { logoutVisible.addEventListener('click', (e) => {
       e.preventDefault();
+      console.log('Logout clicked (visible)');
       localStorage.removeItem('cc_token');
       localStorage.removeItem('cc_user');
       window.location.href = 'login.html';
-    });
+    }); } catch(e) { console.error('Could not attach visible logout handler', e); }
   }
+
+  // Delegated click handlers as a fallback in case direct handlers fail to attach
+  document.addEventListener('click', (e) => {
+    try {
+      const tgt = e.target && (e.target.closest ? e.target.closest('#logoutBtn, #logoutBtnVisible, #editNameBtn, #editBioBtn') : null);
+      if (!tgt) return;
+      if (tgt.id === 'logoutBtn' || tgt.id === 'logoutBtnVisible') {
+        e.preventDefault();
+        localStorage.removeItem('cc_token'); localStorage.removeItem('cc_user'); window.location.href = 'login.html'; return;
+      }
+      if (tgt.id === 'editNameBtn') {
+        const nameEditor = document.getElementById('nameEditor'); const profileNameEl = document.getElementById('profileName'); const nameInput = document.getElementById('nameInput');
+        if (nameEditor && profileNameEl && nameInput) { nameInput.value = profileNameEl.textContent.trim() === 'Profile' ? '' : profileNameEl.textContent.trim(); nameEditor.style.display = 'block'; nameInput.focus(); }
+        return;
+      }
+      if (tgt.id === 'editBioBtn') {
+        const bioEditor = document.getElementById('bioEditor'); const editBtnEl = document.getElementById('editBioBtn'); if (bioEditor && editBtnEl) { bioEditor.style.display = 'block'; editBtnEl.style.display = 'none'; const bioInputEl = document.getElementById('bioInput'); if (bioInputEl) bioInputEl.focus(); }
+        return;
+      }
+    } catch (err) { /* ignore */ }
+  });
   // Bio editing
   const editBtn = document.getElementById('editBioBtn');
   const saveBtn = document.getElementById('saveBioBtn');
@@ -1089,13 +1128,40 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) { /* ignore */ }
   });
 
-  // Cross-tab sync: listen for changes to the profile image in localStorage and update the avatar and previews
-  window.addEventListener('storage', (e) => {
+  // Cross-tab sync: listen for changes to profile image or user object in localStorage and update the UI
+  window.addEventListener('storage', async (e) => {
     try {
+      if (!e.key) return;
+      // profile image changed (preview or canonical)
       if (e.key === 'cc_profile_image') {
         const newImg = e.newValue || 'https://i.ibb.co/5T0QzBk/profile-avatar.png';
-        // use helper to update all relevant UI and dispatch events
         try { setProfileImageUrl(newImg); } catch(e) {}
+        // if we're signed in, refresh authoritative profile from server (helps when server saved inline data URL)
+        if (localStorage.getItem('cc_token')) {
+          try { await getProfile(); } catch (e) { /* ignore */ }
+        }
+        return;
+      }
+
+      // user object changed (name, bio, profileImage updates)
+      if (e.key === 'cc_user') {
+        try {
+          const user = JSON.parse(e.newValue || 'null');
+          if (user) {
+            if (user.profileImage) { try { setProfileImageUrl(user.profileImage); } catch(e) {} }
+            if (typeof user.name === 'string') { const el = document.getElementById('profileName'); if (el) el.textContent = user.name; document.title = `${user.name || 'Profile'} - CampusConnect`; }
+            if (typeof user.bio === 'string') { const bioText = document.getElementById('bioText'); if (bioText) bioText.textContent = user.bio; }
+            // also fetch authoritative profile in case server fields differ
+            if (localStorage.getItem('cc_token')) {
+              try { await getProfile(); } catch (e) { /* ignore */ }
+            }
+          } else {
+            // user cleared; refresh authoritative profile if we're signed in
+            if (localStorage.getItem('cc_token')) {
+              try { await getProfile(); } catch (e) { /* ignore */ }
+            }
+          }
+        } catch (err) { console.warn('Error handling cc_user storage event', err); }
       }
     } catch (err) { /* ignore */ }
   });
@@ -1112,23 +1178,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // remove quick-settings handlers (moved to settings page). If any inline IDs remain, ignore them.
 
-  // add visible logout button handler (if present)
-  const logoutVisible = document.getElementById('logoutBtnVisible');
-  const logoutExisting = document.getElementById('logoutBtn');
-  const doLogout = () => {
-    localStorage.removeItem('cc_token');
-    localStorage.removeItem('cc_user');
-    window.location.href = 'login.html';
-  };
-  if (logoutExisting) {
-    logoutExisting.addEventListener('click', (e) => { e.preventDefault(); doLogout(); });
-  }
-  if (logoutVisible) {
-    logoutVisible.addEventListener('click', (e) => { e.preventDefault(); doLogout(); });
-  }
+  // (duplicate logout handler removed — handled earlier with safer logging and delegation)
 
   // ensure settings page load reflects current settings
   try { if (window.CCSettings && typeof window.CCSettings.load === 'function') window.CCSettings.load(); } catch(e) {}
+
+  // Debug panel: show origin and localStorage status to help diagnose cross-origin issues
+  (function(){
+    try {
+      const dbg = document.createElement('div');
+      dbg.id = 'cc_debug_panel';
+      dbg.style.cssText = 'position:fixed;right:12px;bottom:12px;background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:12px;z-index:2000;max-width:320px';
+      document.body.appendChild(dbg);
+      function updateDbg(){
+        const origin = window.location.origin || window.location.protocol;
+        const token = !!localStorage.getItem('cc_token');
+        const user = localStorage.getItem('cc_user') ? 'present' : 'absent';
+        const img = localStorage.getItem('cc_profile_image') ? 'present' : 'absent';
+        const lastSaved = localStorage.getItem('cc_last_settings_saved') || 'never';
+        dbg.innerHTML = `<div style="margin-bottom:4px"><strong>Origin:</strong> ${origin}</div><div><strong>cc_token:</strong> ${token}</div><div><strong>cc_user:</strong> ${user}</div><div><strong>cc_profile_image:</strong> ${img}</div><div style="margin-top:6px;font-size:11px;color:#ddd"><strong>last saved:</strong> ${lastSaved}</div>`;
+      }
+      updateDbg();
+      window.addEventListener('storage', updateDbg);
+      document.addEventListener('cc:settings-saved', updateDbg);
+      document.addEventListener('cc:settings-updated', updateDbg);
+      // log storage events for debugging
+      window.addEventListener('storage', (e) => { console.log('storage event:', e.key, e.newValue ? '[new value present]' : '[cleared]'); });
+    } catch (e) { /* ignore */ }
+  })();
+
+  // Realtime socket listener: update profile when server broadcasts profile changes
+  (function(){
+    try {
+      if (typeof io !== 'undefined') {
+        const socket = io();
+        socket.on('profile-updated', (data) => {
+          console.log('socket: profile-updated', data);
+          try {
+            if (!data || !data.user) return;
+            const cur = JSON.parse(localStorage.getItem('cc_user') || 'null') || {};
+            if (cur && cur.id && cur.id === data.user.id) {
+              // apply server-provided fields
+              if (data.user.profileImage) {
+                try { setProfileImageUrl(data.user.profileImage); } catch(e) {}
+                try { localStorage.setItem('cc_profile_image', data.user.profileImage); } catch(e) {}
+              }
+              if (typeof data.user.name === 'string') { const el = document.getElementById('profileName'); if (el) el.textContent = data.user.name; }
+              if (typeof data.user.bio === 'string') { const bioText = document.getElementById('bioText'); if (bioText) bioText.textContent = data.user.bio; }
+              const merged = Object.assign({}, cur, data.user);
+              try { localStorage.setItem('cc_user', JSON.stringify(merged)); } catch(e) {}
+              window.CCShowToast && window.CCShowToast('Profile updated', 'success');
+            }
+          } catch (e) { console.warn('Error handling profile-updated socket', e); }
+        });
+      }
+    } catch (e) { /* ignore */ }
+  })();
 
 });
 

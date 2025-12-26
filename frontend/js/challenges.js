@@ -1,5 +1,5 @@
 // challenges.js
-const API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api';
+if (typeof API_BASE === 'undefined') { var API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api'; }
 
 // small toast helper
 function showToast(msg, type='info') {

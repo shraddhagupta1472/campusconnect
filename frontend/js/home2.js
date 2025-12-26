@@ -1,5 +1,5 @@
 // home2.js — updated to use CampusConnect frontend auth keys and API
-const API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api';
+if (typeof API_BASE === 'undefined') { var API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api'; }
 
 document.addEventListener('DOMContentLoaded', () => {
     // allow anonymous access but load user info if logged in

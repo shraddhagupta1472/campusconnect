@@ -1,4 +1,4 @@
-const RES_API = (window.API_BASE || 'http://localhost:4000') + '/api/resources';
+const RES_API = (window.API_BASE || '') + '/api/resources';
 
 // Demo resources to use when API is unavailable
 const DEMO_RESOURCES = [

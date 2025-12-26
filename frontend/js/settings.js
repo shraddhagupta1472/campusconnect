@@ -3,7 +3,7 @@
 
 const SETTINGS_KEY = 'cc_settings';
 const IMAGE_MAX_BYTES = 500 * 1024; // 500KB limit for client preview
-const API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api';
+if (typeof API_BASE === 'undefined') { var API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api'; }
 
 function loadSettings() {
   try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch (e) { return {}; }
@@ -29,27 +29,47 @@ async function saveSettings(obj) {
       if (typeof settings.enableBookmarks === 'boolean') payload.bookmarksEnabled = settings.enableBookmarks;
       if (typeof settings.enableNotifications === 'boolean') payload.disableNotifications = !settings.enableNotifications;
       // include bio in payload so Settings updates bio server-side as well
-      if (typeof settings.bio === 'string') payload.bio = settings.bio;      // include profile image if present so avatar can be persisted server-side
-      if (typeof settings.profileImage === 'string') payload.profileImage = settings.profileImage;      if (Object.keys(payload).length) {
-        const res = await fetch(`${API_BASE}/profile`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify(payload)
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.user) {
-            savedUser = data.user;
-            try {
-              const current = JSON.parse(localStorage.getItem('cc_user') || 'null') || {};
-              const updated = Object.assign({}, current, data.user);
-              localStorage.setItem('cc_user', JSON.stringify(updated));
-              window.cc_user_profile = data.user;
-            } catch (e) { /* ignore */ }
+      if (typeof settings.bio === 'string') payload.bio = settings.bio;
+      // include profile image if present so avatar can be persisted server-side
+      if (typeof settings.profileImage === 'string') payload.profileImage = settings.profileImage;
+      if (Object.keys(payload).length) {
+        try {
+          const res = await fetch(`${API_BASE}/profile`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify(payload)
+          });
+
+          // expired session
+          if (res.status === 401) {
+            console.warn('Settings save: session expired (401)');
+            serverSaved = false;
+            try { localStorage.removeItem('cc_token'); localStorage.removeItem('cc_user'); } catch(e){}
+            try { document.dispatchEvent(new CustomEvent('cc:session-expired')); } catch(e){}
+            try { window.CCShowToast && window.CCShowToast('Session expired — please sign in again', 'warning'); } catch(e){}
+            return { settings, serverSaved, user: null, sessionExpired: true };
           }
-        } else {
-          console.warn('Settings save to server returned', res.status);
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.user) {
+              savedUser = data.user;
+              try {
+                const current = JSON.parse(localStorage.getItem('cc_user') || 'null') || {};
+                const updated = Object.assign({}, current, data.user);
+                localStorage.setItem('cc_user', JSON.stringify(updated));
+                window.cc_user_profile = data.user;
+              } catch (e) { /* ignore */ }
+            }
+          } else {
+            console.warn('Settings save to server returned', res.status);
+            serverSaved = false;
+            try { window.CCShowToast && window.CCShowToast('Could not save settings to server', 'warning'); } catch(e){}
+          }
+        } catch (err) {
+          console.error('Network error saving settings to server', err);
           serverSaved = false;
+          try { window.CCShowToast && window.CCShowToast('Server unreachable — settings saved locally', 'warning'); } catch(e){}
         }
       }
     }
@@ -105,7 +125,8 @@ function populateUI() {
   applyTheme(!!s.darkMode);
   // apply show images immediately
   if (typeof s.showImages !== 'undefined') {
-    const evt = new CustomEvent('cc:settings-updated', { detail: s });
+    // tag this dispatch so listeners can ignore events originating from populateUI (avoid recursion)
+    const evt = new CustomEvent('cc:settings-updated', { detail: Object.assign({}, s, { _source: 'populateUI' }) });
     document.dispatchEvent(evt);
   }
 }
@@ -157,52 +178,62 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  document.getElementById('s_removeImage').addEventListener('click', async (e) => {
-    e.preventDefault();
-    const defaultImg = 'https://i.ibb.co/5T0QzBk/profile-avatar.png';
-    const token = localStorage.getItem('cc_token');
-    // clear UI first
-    document.querySelector('#s_avatarPreview img').src = defaultImg;
-    document.querySelector('#s_avatarPreviewLarge img').src = defaultImg;
-    const inputEl = document.getElementById('s_profileImageInput'); if (inputEl) { inputEl.value = ''; delete inputEl.dataset.preview; }
-    selectedAvatarFile = null;
+  const removeImageBtn = document.getElementById('s_removeImage');
+  if (removeImageBtn) {
+    removeImageBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const defaultImg = 'https://i.ibb.co/5T0QzBk/profile-avatar.png';
+      const token = localStorage.getItem('cc_token');
+      // clear UI first
+      const aPrev = document.querySelector('#s_avatarPreview img'); if (aPrev) aPrev.src = defaultImg;
+      const aPrevLg = document.querySelector('#s_avatarPreviewLarge img'); if (aPrevLg) aPrevLg.src = defaultImg;
+      const inputEl = document.getElementById('s_profileImageInput'); if (inputEl) { inputEl.value = ''; delete inputEl.dataset.preview; }
+      selectedAvatarFile = null;
 
-    try {
-      if (token) {
-        // call server to delete stored avatar
-        try {
-          const res = await fetch((window.API_BASE || 'http://localhost:4000') + '/api/profile/avatar', { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
-          if (!res.ok) throw new Error('Server could not delete avatar');
-          const d = await res.json().catch(() => ({}));
-          const srvUser = d && d.user ? d.user : null;
-          if (srvUser && srvUser.profileImage) {
-            try { localStorage.setItem('cc_profile_image', srvUser.profileImage); } catch(e) {}
-            document.querySelector('#s_avatarPreview img').src = srvUser.profileImage;
-            document.querySelector('#s_avatarPreviewLarge img').src = srvUser.profileImage;
-            const prof = document.getElementById('profileDropdown'); if (prof) prof.src = srvUser.profileImage;
-          } else {
-            try { localStorage.removeItem('cc_profile_image'); } catch(e) {}
-            const prof = document.getElementById('profileDropdown'); if (prof) prof.src = defaultImg;
+      try {
+        if (token) {
+          // call server to delete stored avatar
+          try {
+            const res = await fetch(`${API_BASE}/profile/avatar`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+            if (res.status === 401) {
+              console.warn('Avatar delete: session expired (401)');
+              try { localStorage.removeItem('cc_token'); localStorage.removeItem('cc_user'); } catch(e){}
+              try { document.dispatchEvent(new CustomEvent('cc:session-expired')); } catch(e){}
+              try { window.CCShowToast && window.CCShowToast('Session expired — please sign in again', 'warning'); } catch(e){}
+              return;
+            }
+            if (!res.ok) throw new Error('Server could not delete avatar');
+            const d = await res.json().catch(() => ({}));
+            const srvUser = d && d.user ? d.user : null;
+            if (srvUser && srvUser.profileImage) {
+              try { localStorage.setItem('cc_profile_image', srvUser.profileImage); } catch(e) {}
+              const prev = document.querySelector('#s_avatarPreview img'); if (prev) prev.src = srvUser.profileImage;
+              const prevLg = document.querySelector('#s_avatarPreviewLarge img'); if (prevLg) prevLg.src = srvUser.profileImage;
+              const prof = document.getElementById('profileDropdown'); if (prof) prof.src = srvUser.profileImage;
+            } else {
+              try { localStorage.removeItem('cc_profile_image'); } catch(e) {}
+              const prof = document.getElementById('profileDropdown'); if (prof) prof.src = defaultImg;
+            }
+            try { document.dispatchEvent(new CustomEvent('cc:settings-saved', { detail: { serverSaved: true, user: srvUser } })); } catch(e) {}
+            if (window.CCShowToast) window.CCShowToast('Profile image removed', 'success');
+            return;
+          } catch (err) {
+            console.error('Failed to delete avatar on server', err);
+            if (window.CCShowToast) window.CCShowToast('Could not remove image from server', 'danger');
+            return;
           }
-          try { document.dispatchEvent(new CustomEvent('cc:settings-saved', { detail: { serverSaved: true, user: srvUser } })); } catch(e) {}
-          if (window.CCShowToast) window.CCShowToast('Profile image removed', 'success');
-          return;
-        } catch (err) {
-          console.error('Failed to delete avatar on server', err);
-          if (window.CCShowToast) window.CCShowToast('Could not remove image from server', 'danger');
-          return;
         }
-      }
-    } catch (e) { /* ignore */ }
+      } catch (e) { /* ignore */ }
 
-    // fallback: not signed-in, just clear local preview
-    try {
-      localStorage.removeItem('cc_profile_image');
-      const prof = document.getElementById('profileDropdown'); if (prof) prof.src = defaultImg;
-      document.dispatchEvent(new CustomEvent('cc:settings-updated', { detail: { profileImage: defaultImg } }));
-      if (window.CCShowToast) window.CCShowToast('Profile image removed (local only)', 'info');
-    } catch (e) { /* ignore */ }
-  });
+      // fallback: not signed-in, just clear local preview
+      try {
+        localStorage.removeItem('cc_profile_image');
+        const prof = document.getElementById('profileDropdown'); if (prof) prof.src = defaultImg;
+        document.dispatchEvent(new CustomEvent('cc:settings-updated', { detail: { profileImage: defaultImg } }));
+        if (window.CCShowToast) window.CCShowToast('Profile image removed (local only)', 'info');
+      } catch (e) { /* ignore */ }
+    });
+  }
 
   // Small utility: show a Bootstrap toast
   function showToast(message, type = 'success') {
@@ -230,12 +261,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Save all settings with UX: disable button, show toast, restore button
-  document.getElementById('s_saveAll').addEventListener('click', async (ev) => {
-    ev.preventDefault();
-    const btn = document.getElementById('s_saveAll');
-    const origText = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = 'Saving...';
+  const saveAllBtn = document.getElementById('s_saveAll');
+  if (saveAllBtn) {
+    saveAllBtn.addEventListener('click', async (ev) => {
+      ev.preventDefault();
+      const btn = saveAllBtn;
+      const origText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
 
     const settings = {
       displayName: document.getElementById('s_displayName').value.trim() || undefined,
@@ -250,7 +283,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // include profile image if preview present
-    const imgPreview = document.getElementById('s_profileImageInput').dataset.preview;
+    const sProfileInputEl = document.getElementById('s_profileImageInput');
+    const imgPreview = sProfileInputEl && sProfileInputEl.dataset ? sProfileInputEl.dataset.preview : undefined;
     if (imgPreview) settings.profileImage = imgPreview;
 
     try {
@@ -268,11 +302,75 @@ document.addEventListener('DOMContentLoaded', () => {
           if (typeof settings.visibility !== 'undefined') form.append('visibility', settings.visibility);
           if (typeof settings.enableNotifications !== 'undefined') form.append('enableNotifications', settings.enableNotifications ? '1' : '0');
 
-          const res = await fetch((window.API_BASE || 'http://localhost:4000') + '/api/profile', {
-            method: 'PUT', headers: { Authorization: `Bearer ${token}` }, body: form
-          });
+          let res = null;
+          try {
+            res = await fetch(`${API_BASE}/profile`, { method: 'PUT', headers: { Authorization: `Bearer ${token}` }, body: form });
+          } catch (err) {
+            console.error('Network error uploading avatar', err);
+            showToast('Server unreachable — image upload failed, saved locally.', 'warning');
+            // fallback to inline data URL save below
+            res = { ok: false, status: 0 };
+          }
+
+          // If session expired while uploading
+          if (res && res.status === 401) {
+            console.warn('Avatar upload: session expired (401)');
+            try { localStorage.removeItem('cc_token'); localStorage.removeItem('cc_user'); } catch(e){}
+            try { document.dispatchEvent(new CustomEvent('cc:session-expired')); } catch(e){}
+            try { window.CCShowToast && window.CCShowToast('Session expired — please sign in again', 'warning'); } catch(e){}
+            // fallback to inline save
+          }
+
+          // If server does not accept multipart (501), fall back to saving the image as a data URL via JSON
+          if (!res.ok && res.status === 501) {
+            // read file as data URL
+            const dataUrl = await new Promise((resolve, reject) => {
+              const fr = new FileReader();
+              fr.onload = () => resolve(fr.result);
+              fr.onerror = (e) => reject(e);
+              fr.readAsDataURL(selectedAvatarFile);
+            });
+
+            // include data URL in settings payload and attempt JSON PUT
+            settings.profileImage = dataUrl;
+            const fallbackRes = await saveSettings(settings);
+            // if session expired during fallback save, redirect to login
+            if (fallbackRes && fallbackRes.sessionExpired) { setTimeout(() => { window.location.href = 'login.html'; }, 700); return; }
+
+            showTempSaved(document.getElementById('s_status'));
+            showTempSaved(document.getElementById('s_profileSaved'));
+
+            if (fallbackRes && fallbackRes.serverSaved === false) {
+              showToast('Server does not accept file uploads; saved image inline locally (server not updated).', 'warning');
+            } else {
+              showToast('Server does not accept file uploads; saved image inline to server.', 'warning');
+            }
+
+            // ensure other tabs see the updated name/bio/profile even if server didn't persist
+            try {
+              const cur = JSON.parse(localStorage.getItem('cc_user') || 'null') || {};
+              const merged = Object.assign({}, cur, {
+                name: typeof settings.displayName === 'string' ? settings.displayName : cur.name,
+                bio: typeof settings.bio === 'string' ? settings.bio : cur.bio,
+                profileImage: typeof settings.profileImage === 'string' ? settings.profileImage : (cur.profileImage || localStorage.getItem('cc_profile_image') || '')
+              });
+              localStorage.setItem('cc_user', JSON.stringify(merged));
+              if (merged.profileImage) localStorage.setItem('cc_profile_image', merged.profileImage);
+              try { localStorage.setItem('cc_last_settings_saved', String(Date.now())); } catch(e) {}
+            } catch (e) { /* ignore */ }
+
+            // clear selected file and update UI
+            selectedAvatarFile = null; const inputEl2 = document.getElementById('s_profileImageInput'); if (inputEl2) inputEl2.value = '';
+            try { document.dispatchEvent(new CustomEvent('cc:settings-saved', { detail: { settings, serverSaved: fallbackRes && fallbackRes.serverSaved, user: fallbackRes && fallbackRes.user } })); } catch(e) {}
+
+            return;
+          }
+
           const data = await res.json().catch(() => ({}));
           const result = { settings, serverSaved: !!res.ok, user: data && data.user ? data.user : null };
+          // record last saved timestamp (helps debugging / sync)
+          try { localStorage.setItem('cc_last_settings_saved', String(Date.now())); } catch (e) {}
+          console.log('Settings save result:', { result });
           showTempSaved(document.getElementById('s_status'));
           showTempSaved(document.getElementById('s_profileSaved'));
           if (!res.ok) {
@@ -288,6 +386,19 @@ document.addEventListener('DOMContentLoaded', () => {
               const imgUrl = result.user.profileImage + (result.user.profileImage.indexOf('?') === -1 ? `?v=${Date.now()}` : `&v=${Date.now()}`);
               try { localStorage.setItem('cc_profile_image', imgUrl); } catch(e) {}
             }
+          } else if (result && result.serverSaved === false) {
+            // server did not persist — merge settings into cc_user so other tabs pick up local changes
+            try {
+              const cur = JSON.parse(localStorage.getItem('cc_user') || 'null') || {};
+              const merged = Object.assign({}, cur, {
+                name: typeof settings.displayName === 'string' ? settings.displayName : cur.name,
+                bio: typeof settings.bio === 'string' ? settings.bio : cur.bio,
+                profileImage: typeof settings.profileImage === 'string' ? settings.profileImage : (cur.profileImage || localStorage.getItem('cc_profile_image') || '')
+              });
+              localStorage.setItem('cc_user', JSON.stringify(merged));
+              if (merged.profileImage) localStorage.setItem('cc_profile_image', merged.profileImage);
+              try { localStorage.setItem('cc_last_settings_saved', String(Date.now())); } catch(e) {}
+            } catch (e) { /* ignore */ }
           }
           // clear selected file
           selectedAvatarFile = null; const inputEl = document.getElementById('s_profileImageInput'); if (inputEl) inputEl.value = '';
@@ -298,6 +409,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } else {
         const result = await saveSettings(settings);
+        // if session expired, redirect to login so user can re-authenticate
+        if (result && result.sessionExpired) {
+          // small delay so toast is visible
+          setTimeout(() => { window.location.href = 'login.html'; }, 700);
+          return;
+        }
+        // record last saved timestamp
+        try { localStorage.setItem('cc_last_settings_saved', String(Date.now())); } catch (e) {}
+        console.log('Settings (JSON) save result:', result);
         showTempSaved(document.getElementById('s_status'));
         showTempSaved(document.getElementById('s_profileSaved'));
         if (localStorage.getItem('cc_token') && result && result.serverSaved === false) {
@@ -318,40 +438,55 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Reset to blank/defaults (does not delete server data)
-  document.getElementById('s_reset').addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!confirm('Reset settings to defaults? This will clear local settings only.')) return;
-    localStorage.removeItem(SETTINGS_KEY);
-    // also remove backward keys
-    try { localStorage.removeItem('cc_show_images'); localStorage.removeItem('cc_profile_image'); } catch (e) {}
-    populateUI();
-    document.dispatchEvent(new CustomEvent('cc:settings-updated', { detail: loadSettings() }));
-    showTempSaved(document.getElementById('s_status'));
-  });
+  const resetBtn = document.getElementById('s_reset');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!confirm('Reset settings to defaults? This will clear local settings only.')) return;
+      localStorage.removeItem(SETTINGS_KEY);
+      // also remove backward keys
+      try { localStorage.removeItem('cc_show_images'); localStorage.removeItem('cc_profile_image'); } catch (e) {}
+      populateUI();
+      document.dispatchEvent(new CustomEvent('cc:settings-updated', { detail: loadSettings() }));
+      showTempSaved(document.getElementById('s_status'));
+    });
+  }
 
   // change password (UI-only modal)
-  document.getElementById('s_changePassword').addEventListener('click', () => {
-    const m = new bootstrap.Modal(document.getElementById('changePasswordModal'));
-    m.show();
-  });
-  document.getElementById('cp_save').addEventListener('click', () => {
-    alert('Password change is UI-only in this demo. Implement server-side call to change password.');
-    const m = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
-    if (m) m.hide();
-  });
+  const changePasswordBtn = document.getElementById('s_changePassword');
+  if (changePasswordBtn) {
+    changePasswordBtn.addEventListener('click', () => {
+      const m = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+      m.show();
+    });
+  }
+  const cpSaveBtn = document.getElementById('cp_save');
+  if (cpSaveBtn) {
+    cpSaveBtn.addEventListener('click', () => {
+      alert('Password change is UI-only in this demo. Implement server-side call to change password.');
+      const m = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+      if (m) m.hide();
+    });
+  }
 
   // Logout all sessions simulation
-  document.getElementById('s_logoutAll').addEventListener('click', () => {
-    if (!confirm('Simulate logging out from all sessions? This will clear your local token.')) return;
-    localStorage.removeItem('cc_token');
-    showTempSaved(document.getElementById('s_status'));
-    alert('Simulated logout: local session cleared. To fully log out other sessions, implement server-side session invalidation.');
-  });
+  const logoutAllBtn = document.getElementById('s_logoutAll');
+  if (logoutAllBtn) {
+    logoutAllBtn.addEventListener('click', () => {
+      if (!confirm('Simulate logging out from all sessions? This will clear your local token.')) return;
+      localStorage.removeItem('cc_token');
+      showTempSaved(document.getElementById('s_status'));
+      alert('Simulated logout: local session cleared. To fully log out other sessions, implement server-side session invalidation.');
+    });
+  }
 
 });
 
 // When other pages ask to apply settings, update UI accordingly (e.g., profile page listens)
 document.addEventListener('cc:settings-updated', (e) => {
+  // ignore events that originated from populateUI (prevents recursive calls)
+  const src = e && e.detail && e.detail._source;
+  if (src === 'populateUI') return;
   // keep UI consistent (populate values from new settings)
   populateUI();
 });
@@ -406,3 +541,11 @@ window.CCSettings = {
 };
 // Allow other modules to show a toast using the same styling
 window.CCShowToast = function(msg, type) { try { showToast(msg, type); } catch(e){} };
+
+// Global session-expired handler: show user-friendly message and re-enable Save button
+document.addEventListener('cc:session-expired', () => {
+  try {
+    window.CCShowToast && window.CCShowToast('Session expired. Please sign in again.', 'warning');
+    const saveBtn = document.getElementById('s_saveAll'); if (saveBtn) saveBtn.disabled = false;
+  } catch (e) { /* ignore */ }
+});

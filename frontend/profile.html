@@ -43,12 +43,12 @@
           </div>
           <div class="d-flex align-items-center gap-2">
             <h4 id="profileName" class="profile-name mt-2 mb-0">Profile</h4>
-            <button id="editNameBtn" class="btn btn-link p-0 ms-2" title="Edit name"><i class="bi bi-pencil"></i></button>
+            <button id="editNameBtn" type="button" class="btn btn-link p-0 ms-2" title="Edit name"><i class="bi bi-pencil" aria-hidden="true"></i><span class="visually-hidden">Edit name</span></button>
           </div>
           <div id="nameEditor" style="display:none; margin-top:6px">
             <input id="nameInput" class="form-control form-control-sm" style="display:inline-block; width:auto;" />
-            <button id="nameSaveBtn" class="btn btn-sm btn-primary ms-2">Save</button>
-            <button id="nameCancelBtn" class="btn btn-sm btn-secondary ms-1">Cancel</button>
+            <button id="nameSaveBtn" type="button" class="btn btn-sm btn-primary ms-2">Save</button>
+            <button id="nameCancelBtn" type="button" class="btn btn-sm btn-secondary ms-1">Cancel</button>
           </div>
           <div id="profileMeta" class="small text-muted mt-1 d-flex gap-3 align-items-center">
             <span id="memberSince"></span>
@@ -71,7 +71,7 @@
           <a id="settingsBtn" class="btn btn-outline-secondary btn-sm me-2" href="settings.html" title="Open Settings">
             <i class="bi bi-gear"></i> Settings
           </a>
-          <button id="logoutBtnVisible" class="btn btn-outline-danger btn-sm me-2" title="Logout">
+          <button id="logoutBtnVisible" type="button" class="btn btn-outline-danger btn-sm me-2" title="Logout">
             <i class="bi bi-box-arrow-right"></i> Logout
           </button>
           <div class="dropdown">
@@ -229,6 +229,20 @@
   </div>
 
   <script src="js/settings.js"></script>
+  <!-- Load socket.io client from backend origin; fallback to CDN if unavailable -->
+  <script>
+    (function(){
+      try {
+        var backendBase = (window.API_BASE && typeof window.API_BASE === 'string') ? window.API_BASE.replace(/\/api\/?$/, '') : 'http://localhost:4000';
+        var s = document.createElement('script');
+        s.src = backendBase + '/socket.io/socket.io.js';
+        s.onerror = function(){
+          var cdn = document.createElement('script'); cdn.src = 'https://cdn.socket.io/4.6.1/socket.io.min.js'; document.head.appendChild(cdn);
+        };
+        document.head.appendChild(s);
+      } catch (e) { var cdn = document.createElement('script'); cdn.src = 'https://cdn.socket.io/4.6.1/socket.io.min.js'; document.head.appendChild(cdn); }
+    })();
+  </script>
   <script src="js/profile.js"></script>
   <script src="js/theme.js"></script>
   <!-- Bootstrap JS -->

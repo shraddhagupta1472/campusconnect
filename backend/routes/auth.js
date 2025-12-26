@@ -9,7 +9,7 @@ const authMiddleware = require('../middleware/auth');
 const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
-const config = require('../utils/config');
+// `config` already required above; avoid duplicate declaration
 let multer = null; // optional: gracefully degrade if multer not installed
 try { multer = require('multer'); } catch (e) { /* multer not installed; fallback to accepting data URLs */ }
 const router = express.Router();
@@ -154,6 +154,13 @@ router.delete('/profile/avatar', authMiddleware, async (req, res) => {
     // return updated user with canonical profileImage
     const profileImgUrl = computeProfileImageUrl(req, user.profileImage);
     res.json({ user: { id: user._id.toString(), name: user.name, email: user.email, bio: user.bio || '', bookmarks: user.bookmarks || [], bookmarksEnabled: !!user.bookmarksEnabled, profileImage: profileImgUrl, createdAt: user.createdAt } });
+    try {
+      const io = require('../utils/io').getIo();
+      if (io) {
+        try { io.emit('profile-updated', { user: { id: user._id.toString(), name: user.name, bio: user.bio || '', profileImage: profileImgUrl } }); } catch(e){}
+      }
+    } catch(e) {}
+
   } catch (err) {
     console.error('Failed to delete avatar', err);
     res.status(500).json({ error: 'Server error' });
@@ -280,6 +287,16 @@ router.put('/profile', authMiddleware, uploadMiddleware, async (req, res) => {
     }
 
     res.json({ user: { id: user._id.toString(), name: user.name, email: user.email, bio: user.bio || '', bookmarks: user.bookmarks || [], bookmarksEnabled: !!user.bookmarksEnabled, profileImage: profileImgUrl, createdAt: user.createdAt } });
+
+    // Real-time notification for profile updates so connected clients can refresh immediately
+    try {
+      const io = require('../utils/io').getIo();
+      if (io) {
+        try {
+          io.emit('profile-updated', { user: { id: user._id.toString(), name: user.name, bio: user.bio || '', profileImage: profileImgUrl } });
+        } catch (e) { /* ignore */ }
+      }
+    } catch (e) { /* ignore */ }
 
     try {
       const io = require('../utils/io').getIo();

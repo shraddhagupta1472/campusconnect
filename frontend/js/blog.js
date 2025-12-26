@@ -1,4 +1,4 @@
-const API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api';
+if (typeof API_BASE === 'undefined') { var API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api'; }
 
 // Demo fallback posts (used when backend is unavailable)
 const DEMO_POSTS = [

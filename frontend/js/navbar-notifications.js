@@ -1,4 +1,4 @@
-const NOTIF_API = (window.API_BASE || 'http://localhost:4000') + '/api/notifications';
+const NOTIF_API = (window.API_BASE || '') + '/api/notifications';
 
 async function refreshNotifBadge() {
   const btn = document.getElementById('notifBtn');

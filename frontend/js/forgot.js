@@ -1,7 +1,9 @@
 // forgot.js
-const API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api';
+if (typeof API_BASE === 'undefined') { var API_BASE = (window.API_BASE || 'http://localhost:4000') + '/api'; }
 
-document.getElementById("forgotForm").addEventListener("submit", async function (e) {
+const forgotFormEl = document.getElementById("forgotForm");
+if (forgotFormEl) {
+  forgotFormEl.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const email = document.getElementById("forgotEmail").value;
