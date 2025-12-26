@@ -113,8 +113,30 @@ body {
 
 .blog-body {
   width: 65%;
+  position: relative; /* allow action-area absolute positioning */
+  padding-right: 120px; /* reserve space for action buttons */
 }
 
+/* Action buttons container placed at top-right; responsive fallback moves it below content */
+.action-area {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .blog-body {
+    padding-right: 0; /* actions flow naturally under content on small screens */
+  }
+  .action-area {
+    position: static;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+}
 .blog-title {
   font-size: 18px;
   font-weight: 600;

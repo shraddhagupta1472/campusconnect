@@ -207,8 +207,8 @@ async function loadBlogs() {
     item.innerHTML = `
       <img src="${img}" class="blog-thumb" alt="">
       <div class="blog-body">
-        <div style="position:relative">
-          <div style="position:absolute;right:0;top:0">
+        <div class="action-wrap">
+          <div class="action-area">
             <button class="btn btn-sm action-btn bookmark-btn" data-id="${id}" data-title="${escapeHtml(b.title || '')}" title="Save bookmark">
               <i class="bi bi-bookmark"></i>
             </button>
