@@ -148,7 +148,10 @@ router.put('/blogs/:id', authMiddleware, async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ error: 'Not found' });
     const blog = await Blog.findById(id);
     if (!blog) return res.status(404).json({ error: 'Not found' });
-    if (blog.authorId !== req.user.id) return res.status(403).json({ error: 'Not allowed' });
+    if (String(blog.authorId) !== String(req.user.id)) {
+      console.warn('Unauthorized edit attempt', { blogId: id, blogAuthor: blog.authorId, userId: req.user.id });
+      return res.status(403).json({ error: 'Not allowed' });
+    }
     blog.title = title;
     blog.content = content;
     if (typeof req.body.essential === 'boolean') blog.essential = req.body.essential;
